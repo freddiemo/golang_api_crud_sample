@@ -9,6 +9,8 @@ import (
 type UserRepository interface {
 	Save(user entity.User)
 	FindAll() []entity.User
+	Update(user entity.User)
+	Delete(user entity.User)
 }
 
 type userRepo struct {
@@ -21,8 +23,17 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
+
 func (userRepo *userRepo) Save(user entity.User) {
 	userRepo.connection.Create(&user)
+}
+
+func (userRepo *userRepo) Update(user entity.User) {
+	userRepo.connection.Omit("created_at").Save(&user)
+}
+
+func (userRepo *userRepo) Delete(user entity.User) {
+	userRepo.connection.Delete(&user)
 }
 
 func (userRepo *userRepo) FindAll() []entity.User {

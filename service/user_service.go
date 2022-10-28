@@ -8,6 +8,8 @@ import (
 type UserService interface {
 	Save(entity.User) entity.User
 	FindAll() []entity.User
+	Update(user entity.User)
+	Delete(user entity.User)
 }
 
 type userService struct {
@@ -27,4 +29,12 @@ func (service *userService) Save(user entity.User) entity.User {
 
 func (service *userService) FindAll() []entity.User {
 	return service.userRepository.FindAll()
+}
+
+func (service *userService) Update(user entity.User) {
+	service.userRepository.Update(user)
+}
+
+func (service *userService) Delete(user entity.User) {
+	service.userRepository.Delete(user)
 }

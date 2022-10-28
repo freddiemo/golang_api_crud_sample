@@ -5,7 +5,6 @@ import(
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -36,7 +35,6 @@ func main() {
 	envs := setupEnvironment()
 	setupLogOutput(envs["APP_NAME"])
 	var db = repository.NewConnection(envs["DB_HOST"], envs["DB_USER"], envs["DB_PASSWORD"], envs["DB_NAME"], envs["DB_PORT"])
-	fmt.Println("db: ", db)
 
 	server := gin.Default()
 	server.GET("/", func(ctx *gin.Context) {
@@ -64,6 +62,27 @@ func main() {
 				ctx.JSON(http.StatusOK, user)
 			}
 		})
+
+		apiRoutes.PUT("/users/:id", func(ctx *gin.Context) {
+			user, err := userController.Update(ctx)
+
+			if err != nil {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			} else {
+				ctx.JSON(http.StatusOK, user)
+			}
+		})
+
+		apiRoutes.DELETE("/users/:id", func(ctx *gin.Context) {
+			err := userController.Delete(ctx)
+
+			if err != nil {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			} else {
+				ctx.JSON(http.StatusOK, gin.H{"message": "OK"})
+			}
+		})
+
 	}
 
 	server.Run(":" + envs["APP_PORT"])
