@@ -5,8 +5,10 @@ import(
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
+	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/golang_api_crud_sample/service"
 	"github.com/golang_api_crud_sample/controller"
@@ -22,10 +24,15 @@ func setupEnvironment() map[string]string {
 	return params
 }
 
+func setupLogOutput(app_name string) {
+	f, _ := os.Create(app_name + ".log")
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+}
 
 func main() {
 
 	envs := setupEnvironment()
+	setupLogOutput(envs["APP_NAME"])
 
 	server := gin.Default()
 	server.GET("/", func(ctx *gin.Context) {
