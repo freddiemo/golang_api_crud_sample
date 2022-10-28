@@ -44,13 +44,16 @@ func main() {
 	var userService service.UserService = service.New()
 	var userController controller.UserController = controller.New(userService)
 
-	server.GET("/users", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, userController.FindAll())
-	})
+	apiRoutes := server.Group("/v1")
+	{
+		apiRoutes.GET("/users", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, userController.FindAll())
+		})
 
-	server.POST("/users", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, userController.Save(ctx))
-	})
+		apiRoutes.POST("/users", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, userController.Save(ctx))
+		})
+	}
 
 	server.Run(":" + envs["APP_PORT"])
 }
