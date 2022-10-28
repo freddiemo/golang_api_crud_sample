@@ -1,6 +1,9 @@
 package service
 
-import "github.com/golang_api_crud_sample/entity"
+import (
+	"github.com/golang_api_crud_sample/entity"
+	"github.com/golang_api_crud_sample/repository"
+)
 
 type UserService interface {
 	Save(entity.User) entity.User
@@ -8,18 +11,20 @@ type UserService interface {
 }
 
 type userService struct {
-	users []entity.User
+	userRepository repository.UserRepository
 }
 
-func New() UserService {
-	return &userService{}
+func New(userRepo repository.UserRepository) UserService {
+	return &userService{
+		userRepository: userRepo,
+	}
 }
 
 func (service *userService) Save(user entity.User) entity.User {
-	service.users = append(service.users, user)
+	service.userRepository.Save(user)
 	return user
 }
 
 func (service *userService) FindAll() []entity.User {
-	return service.users
+	return service.userRepository.FindAll()
 }

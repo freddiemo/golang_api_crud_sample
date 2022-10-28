@@ -5,13 +5,15 @@ import(
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/golang_api_crud_sample/service"
 	"github.com/golang_api_crud_sample/controller"
+	"github.com/golang_api_crud_sample/repository"
+	"github.com/golang_api_crud_sample/service"
 )
 
 func setupEnvironment() map[string]string {
@@ -33,6 +35,8 @@ func main() {
 
 	envs := setupEnvironment()
 	setupLogOutput(envs["APP_NAME"])
+	var db = repository.NewConnection(envs["DB_HOST"], envs["DB_USER"], envs["DB_PASSWORD"], envs["DB_NAME"], envs["DB_PORT"])
+	fmt.Println("db: ", db)
 
 	server := gin.Default()
 	server.GET("/", func(ctx *gin.Context) {
@@ -41,7 +45,8 @@ func main() {
 		})
 	})
 
-	var userService service.UserService = service.New()
+	var userRepository repository.UserRepository = repository.NewUserRepository(db)
+	var userService service.UserService = service.New(userRepository)
 	var userController controller.UserController = controller.New(userService)
 
 	apiRoutes := server.Group("/v1")
