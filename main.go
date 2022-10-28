@@ -51,7 +51,13 @@ func main() {
 		})
 
 		apiRoutes.POST("/users", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, userController.Save(ctx))
+			user, err := userController.Save(ctx)
+
+			if err != nil {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			} else {
+				ctx.JSON(http.StatusOK, user)
+			}
 		})
 	}
 
