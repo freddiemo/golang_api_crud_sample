@@ -4,6 +4,7 @@ import "github.com/golang_api_crud_sample/entity"
 
 type UserService interface {
 	Save(entity.User) entity.User
+	FindAll() []entity.User
 }
 
 type userService struct {
@@ -17,4 +18,8 @@ func New() UserService {
 func (service *userService) Save(user entity.User) entity.User {
 	service.users = append(service.users, user)
 	return user
+}
+
+func (service *userService) FindAll() []entity.User {
+	return service.users
 }

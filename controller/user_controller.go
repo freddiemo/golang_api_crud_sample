@@ -8,6 +8,7 @@ import (
 )
 
 type UserController interface {
+	FindAll() []entity.User
 	Save(ctx *gin.Context) entity.User
 }
 
@@ -19,6 +20,10 @@ func New(service service.UserService) UserController {
 	return &controller{
 		service: service,
 	}
+}
+
+func (c *controller) FindAll() []entity.User {
+	return c.service.FindAll()
 }
 
 func (c *controller) Save(ctx *gin.Context) entity.User {

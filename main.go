@@ -37,6 +37,10 @@ func main() {
 	var userService service.UserService = service.New()
 	var userController controller.UserController = controller.New(userService)
 
+	server.GET("/users", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, userController.FindAll())
+	})
+
 	server.POST("/users", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, userController.Save(ctx))
 	})
